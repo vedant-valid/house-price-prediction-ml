@@ -56,7 +56,7 @@ The objective: build a model that quantifies exactly how much each factor contri
 
 ## Dataset
 
-Sales records covering residential transactions from a **3-month window in 2014** spanning the broader Seattle region.
+Sales records covering residential transactions from a **3-month window in 2014-2015** spanning the broader Seattle region.
 
 | Attribute | Detail |
 |---|---|
