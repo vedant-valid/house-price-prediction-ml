@@ -13,7 +13,7 @@ This project is a complete machine learning system that estimates residential pr
 
 Rather than stopping at a notebook, we built a fully modular pipeline — separate files for preprocessing, training, inference, and UI — so the whole system can be retrained, updated, or extended without touching the app.
 
-**Live Demo →** (https://house-price-prediction-ml-project-9.streamlit.app/)
+**Live Demo →** (https://house-price-prediction-ml-p-9.streamlit.app/)
 
 **Data Source →** Residential sales records across 44 municipalities, 77 postal zones
 
