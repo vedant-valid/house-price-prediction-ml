@@ -6,7 +6,6 @@ __pycache__/
 .venv/
 
 # Model files
-*.pkl
 
 # Mac
 .DS_Store
