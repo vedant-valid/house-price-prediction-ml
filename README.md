@@ -1,5 +1,5 @@
 ![home](https://github.com/user-attachments/assets/1c924573-5cc8-4673-a686-be59fda38e69)
-# 🏠 Property Price Estimator
+# Property Price Estimator
 ### ML-Based Valuation System — Washington State Housing Market
 
 > We started with a simple question: can a machine learn what makes one house worth twice as much as another?
