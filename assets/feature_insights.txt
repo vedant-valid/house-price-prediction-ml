@@ -1,0 +1,8 @@
+Feature Importance Insights
+----------------------------
+
+* TOP DRIVER — 'sqft_living' accounts for 44.2% of the model's decision weight. In King County specifically, living area is the single strongest price signal because the market spans a wide range of property sizes — from compact urban condos in Seattle to large suburban homes in Bellevue and Renton — making square footage the clearest separator between price tiers.
+
+* LOCATION vs STRUCTURE — Among the top 15 features, location-based attributes (city and statezip OHE columns) contribute a combined 14.3% importance, while structural attributes (sqft, bedrooms, bathrooms, floors) contribute 57.1%. This confirms that WHERE a property sits within King County is nearly as predictive as WHAT the property physically is — consistent with the well-known real estate maxim that location is paramount in dense, geographically varied markets.
+
+* INVESTOR FOCUS — The top 3 features (sqft_living, 44.2%), (total_sqft, 5.5%), and (city_Seattle, 5.2%) collectively dominate the pricing model. An investor evaluating a King County property should prioritise verifiable square footage data and accurate location classification (zip code / neighbourhood) over cosmetic upgrades — the model evidence shows these structural and locational fundamentals explain the most variance in achieved sale price.

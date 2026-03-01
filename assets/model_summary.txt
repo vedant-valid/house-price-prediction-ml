@@ -1,0 +1,20 @@
+## Model Selection Summary
+
+**Winner: Linear Regression**
+
+| Metric | Value |
+|--------|-------|
+| R2 Score (log space) | 0.8028 |
+| CV R2 (5-fold) | 0.8160 |
+| MAE | $81,492 |
+| RMSE | $138,943 |
+
+---
+
+### Why Linear Regression Won on King County Data
+
+The King County, Washington residential sales dataset (2014-2015) exhibits a relatively **linear price structure** driven by a small set of dominant features: square footage (sqft_living), location (city, statezip via OHE), and structural attributes (bedrooms, bathrooms, floors). After standardised scaling, extensive one-hot encoding, and a log1p transform on the target, the feature space favours models that capture additive linear relationships in log-price space. Linear Regression achieved R2=0.8028 on the held-out test set, outperforming Random Forest (R2=0.7346), Decision Tree (R2=0.5193), XGBoost (R2=0.7883). The 5-fold cross-validation R2 of 0.8160 confirms that the result is stable and not an artefact of a favourable train/test split.
+
+### What This Means for a Real Estate Investor
+
+For a real estate professional using this tool, the winning model carries a practical advantage: **interpretability and reliability**. The MAE of $81,492 sets the expected average prediction error in dollar terms; on King County properties (median ~$450,000) this represents an approximation error of roughly 18.1% — a range an investor can factor into margin calculations when assessing whether an asking price is above or below fair value. The log-transform on price ensures the model penalises percentage errors equally across the price spectrum rather than over-weighting luxury outliers.
