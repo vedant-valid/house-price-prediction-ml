@@ -1,25 +1,15 @@
 # Python
 __pycache__/
 *.pyc
-*.pyo
 
-# Virtual environments
+# Virtual environment
 .venv/
-venv/
-env/
+
+# Model files
+*.pkl
+
+# Mac
+.DS_Store
 
 # Jupyter
 .ipynb_checkpoints/
-
-# Mac files
-.DS_Store
-
-# Model artifacts
-*.pkl
-*.joblib
-
-# Logs
-*.log
-
-# IDE
-.vscode/
