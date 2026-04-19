@@ -8,6 +8,6 @@ matplotlib
 seaborn
 joblib
 langgraph
-langchain-google-genai>=2.0.0
 langchain-core
+openai
 pytest

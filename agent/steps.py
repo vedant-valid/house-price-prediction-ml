@@ -2,7 +2,7 @@ import os
 import json
 import time
 import pandas as pd
-from langchain_google_genai import ChatGoogleGenerativeAI
+from openai import OpenAI
 
 from agent.state import AgentState
 from agent.rag import search
@@ -123,18 +123,18 @@ def write_report(state: AgentState) -> AgentState:
         comps_summary=comps_summary,
     )
 
-    api_key = os.environ.get("GOOGLE_API_KEY", "")
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash-lite",
-        google_api_key=api_key,
-        temperature=0.3,
-    )
+    api_key = os.environ.get("XAI_API_KEY", "")
+    client = OpenAI(api_key=api_key, base_url="https://api.x.ai/v1")
 
     last_err = None
     for attempt in range(3):
         try:
-            response = llm.invoke(prompt)
-            raw = response.content.strip()
+            response = client.chat.completions.create(
+                model="grok-3-mini",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.3,
+            )
+            raw = response.choices[0].message.content.strip()
             if raw.startswith("```"):
                 raw = raw.split("```", 2)[1]
                 if raw.startswith("json"):
@@ -151,15 +151,15 @@ def write_report(state: AgentState) -> AgentState:
         except Exception as e:
             last_err = e
             if "429" in str(e) and attempt < 2:
-                time.sleep(10 * (attempt + 1))
+                time.sleep(5 * (attempt + 1))
             else:
                 break
 
     err_msg = str(last_err)
     if "429" in err_msg:
-        action = "HOLD — Gemini API quota exhausted. Free tier resets daily at midnight Pacific. Try again tomorrow or enable billing at console.cloud.google.com."
-    elif "API key" in err_msg or "403" in err_msg:
-        action = "HOLD — Invalid API key. Check GOOGLE_API_KEY in Streamlit secrets."
+        action = "HOLD — API rate limit hit. Please try again in a moment."
+    elif "401" in err_msg or "API key" in err_msg:
+        action = "HOLD — Invalid API key. Check XAI_API_KEY in Streamlit secrets."
     else:
         action = f"HOLD — LLM error: {type(last_err).__name__}: {err_msg[:200]}"
 
