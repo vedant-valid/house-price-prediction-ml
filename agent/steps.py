@@ -124,7 +124,7 @@ def write_report(state: AgentState) -> AgentState:
 
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash-lite",
+            model="gemini-1.5-flash-latest",
             google_api_key=os.environ.get("GOOGLE_API_KEY", ""),
             temperature=0.3,
         )
