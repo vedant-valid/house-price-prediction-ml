@@ -123,14 +123,14 @@ def write_report(state: AgentState) -> AgentState:
         comps_summary=comps_summary,
     )
 
-    api_key = os.environ.get("GROQ_API_KEY", "")
-    client = OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
+    api_key = os.environ.get("HF_API_KEY", "")
+    client = OpenAI(api_key=api_key, base_url="https://api-inference.huggingface.co/v1")
 
     last_err = None
     for attempt in range(3):
         try:
             response = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
+                model="mistralai/Mistral-7B-Instruct-v0.3",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.3,
             )
@@ -159,7 +159,7 @@ def write_report(state: AgentState) -> AgentState:
     if "429" in err_msg:
         action = "HOLD — API rate limit hit. Please try again in a moment."
     elif "401" in err_msg or "API key" in err_msg:
-        action = "HOLD — Invalid API key. Check GROQ_API_KEY in Streamlit secrets."
+        action = "HOLD — Invalid API key. Check HF_API_KEY in Streamlit secrets."
     else:
         action = f"HOLD — LLM error: {type(last_err).__name__}: {err_msg[:200]}"
 
