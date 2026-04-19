@@ -1,0 +1,27 @@
+Real Estate Investment Principles for King County
+
+BUY indicators:
+- Property priced 10% or more below the neighborhood median
+- Good to excellent condition rating (4 or 5 out of 5)
+- Waterfront or high view quality features present
+- Located in high-demand ZIP codes such as 98004, 98112, 98040, 98039
+- Living area above 2000 sqft with at least two bathrooms
+- Property age under 30 years with no major deferred maintenance
+
+HOLD indicators:
+- Property priced within 5% of the neighborhood median
+- Average condition (3 out of 5) in a stable neighborhood
+- No significant premium features but solid location fundamentals
+- Area showing flat appreciation over the past 12 months
+
+AVOID indicators:
+- Property priced significantly above comparable homes in the area
+- Poor condition (1 or 2 out of 5) requiring major renovation budget
+- Very high bedroom count relative to total living area
+- ZIP codes with declining median prices or high days-on-market
+
+Return on investment factors:
+- Waterfront properties command a 20-40% premium over comparable inland homes
+- Each condition point above average adds approximately 5-8% to sale price
+- Properties built after 1990 typically require less maintenance capital
+- Proximity to light rail and transit corridors adds measurable value
