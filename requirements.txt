@@ -10,5 +10,4 @@ joblib
 langgraph
 langchain-google-genai>=2.0.0
 langchain-core
-sentence-transformers
 pytest

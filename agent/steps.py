@@ -186,6 +186,6 @@ def add_disclaimer(state: AgentState) -> AgentState:
 def route_after_retrieval(state: AgentState) -> str:
     if state.get("error"):
         return "end"
-    if state["retrieval_score"] < 0.4:
+    if state["retrieval_score"] < 0.01:
         return "fallback"
     return "continue"
