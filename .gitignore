@@ -20,4 +20,6 @@ chroma_db/
 
 # Large data files
 *.html
+# PDFs ignored except the project report
 *.pdf
+!report/project_report.pdf
