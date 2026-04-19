@@ -4,9 +4,9 @@ import time
 import pandas as pd
 from huggingface_hub import InferenceClient
 
-from agent.state import AgentState
-from agent.rag import search
-from agent.prompts import REPORT_PROMPT, PARSE_PROMPT
+from logic.state import AgentState
+from logic.rag import search
+from logic.prompts import REPORT_PROMPT, PARSE_PROMPT
 
 
 def check_input(state: AgentState) -> AgentState:
@@ -19,7 +19,7 @@ def check_input(state: AgentState) -> AgentState:
 
 def predict_price(state: AgentState) -> AgentState:
     try:
-        from inference import predict_property
+        from logic.inference import predict_property
         result = predict_property(state["property_input"])
         state["predicted_price"] = result["predicted_price"]
         state["price_range"] = result["price_range"]
@@ -54,7 +54,7 @@ def use_fallback(state: AgentState) -> AgentState:
 
 def find_similar_homes(state: AgentState) -> AgentState:
     try:
-        df = pd.read_csv("data.csv")
+        df = pd.read_csv("data/data.csv")
         prop = state["property_input"]
         sqft = float(prop.get("sqft_living", 1800))
         beds = int(prop.get("bedrooms", 3))

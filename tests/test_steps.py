@@ -1,4 +1,4 @@
-from agent.state import AgentState
+from logic.state import AgentState
 
 def test_agent_state_keys():
     state: AgentState = {
@@ -28,7 +28,7 @@ def test_rag_builder_creates_files():
         "city": ["Seattle", "Bellevue", "Mercer Island", "Auburn", "Seattle"],
         "statezip": ["WA 98103", "WA 98004", "WA 98040", "WA 98002", "WA 98115"],
     })
-    import rag_builder
+    from logic import rag_builder
     orig_dir = rag_builder.MARKET_DATA_DIR
     with tempfile.TemporaryDirectory() as tmpdir:
         rag_builder.MARKET_DATA_DIR = tmpdir
@@ -43,7 +43,7 @@ def test_rag_builder_creates_files():
         assert "market_seasonality.txt" in files
 
 def test_rag_search_returns_docs():
-    from agent.rag import search
+    from logic.rag import search
     docs, score = search("Seattle 3 bedroom house price investment", k=2)
     assert isinstance(docs, list)
     assert isinstance(score, float)
@@ -72,14 +72,14 @@ def _base_state():
 
 
 def test_check_input_passes_valid():
-    from agent.steps import check_input
+    from logic.steps import check_input
     state = _base_state()
     result = check_input(state)
     assert result["error"] is None
 
 
 def test_check_input_catches_missing_field():
-    from agent.steps import check_input
+    from logic.steps import check_input
     state = _base_state()
     del state["property_input"]["city"]
     result = check_input(state)
@@ -88,7 +88,7 @@ def test_check_input_catches_missing_field():
 
 
 def test_predict_price_sets_price():
-    from agent.steps import predict_price
+    from logic.steps import predict_price
     state = _base_state()
     result = predict_price(state)
     assert result["predicted_price"] > 0
@@ -97,7 +97,7 @@ def test_predict_price_sets_price():
 
 
 def test_use_fallback_sets_docs():
-    from agent.steps import use_fallback
+    from logic.steps import use_fallback
     state = _base_state()
     result = use_fallback(state)
     assert len(result["retrieved_docs"]) > 0
@@ -105,7 +105,7 @@ def test_use_fallback_sets_docs():
 
 
 def test_find_similar_homes_returns_list():
-    from agent.steps import find_similar_homes
+    from logic.steps import find_similar_homes
     state = _base_state()
     state["predicted_price"] = 450000.0
     result = find_similar_homes(state)
@@ -113,7 +113,7 @@ def test_find_similar_homes_returns_list():
 
 
 def test_add_disclaimer_appends_text():
-    from agent.steps import add_disclaimer
+    from logic.steps import add_disclaimer
     state = _base_state()
     state["report"] = {"summary": "test", "action": "BUY", "market_notes": []}
     result = add_disclaimer(state)
@@ -122,7 +122,7 @@ def test_add_disclaimer_appends_text():
 
 
 def test_write_report_fallback_on_bad_response():
-    from agent.steps import write_report
+    from logic.steps import write_report
     state = _base_state()
     state["predicted_price"] = 450000.0
     state["price_range"] = {"low": 405000.0, "high": 495000.0}
@@ -132,7 +132,7 @@ def test_write_report_fallback_on_bad_response():
     mock_response = MagicMock()
     mock_response.content = "this is not json {{{broken"
 
-    with patch("agent.steps.ChatGoogleGenerativeAI") as MockLLM:
+    with patch("logic.steps.InferenceClient") as MockLLM:
         MockLLM.return_value.invoke.return_value = mock_response
         result = write_report(state)
 

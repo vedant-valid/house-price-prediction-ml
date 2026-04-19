@@ -26,7 +26,7 @@ def test_pipeline_runs_end_to_end():
 
     with patch("agent.steps.ChatGoogleGenerativeAI") as MockLLM:
         MockLLM.return_value.invoke.return_value = mock_response
-        from agent.pipeline import pipeline
+        from logic.pipeline import pipeline
         result = pipeline.invoke(_sample_input())
 
     assert result["error"] is None
@@ -37,7 +37,7 @@ def test_pipeline_runs_end_to_end():
 
 
 def test_pipeline_handles_missing_input():
-    from agent.pipeline import pipeline
+    from logic.pipeline import pipeline
     bad_input = _sample_input()
     del bad_input["property_input"]["city"]
     result = pipeline.invoke(bad_input)

@@ -10,7 +10,7 @@ import pickle
 import streamlit as st
 import pandas as pd
 
-from inference import predict_property
+from logic.inference import predict_property
 
 # ------------------------------------------------------------------ #
 # PAGE CONFIG
@@ -493,7 +493,7 @@ with tab2:
 
     if st.button("🔍 Get Investment Advisory", key="advisor_btn", type="primary"):
         if user_query.strip():
-            from agent.steps import parse_query
+            from logic.steps import parse_query
             with st.spinner("Parsing your query..."):
                 parsed = parse_query(user_query.strip())
             if parsed:
@@ -507,7 +507,7 @@ with tab2:
                     f"Condition **{parsed.get('condition', '?')}/5** · "
                     f"Built **{parsed.get('yr_built', '?')}**"
                 )
-        from agent.pipeline import pipeline
+        from logic.pipeline import pipeline
 
         initial_state = {
             "property_input":  advisor_input,

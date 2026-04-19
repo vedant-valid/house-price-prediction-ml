@@ -18,8 +18,8 @@ Usage:
 
 import pandas as pd
 
-from preprocessing import preprocess_pipeline
-from models import (
+from logic.preprocessing import preprocess_pipeline
+from logic.models import (
     train_all_models,
     evaluate_models,
     auto_select_best_model,
@@ -36,7 +36,7 @@ print("=" * 56)
 print("  House Price Prediction — Training Pipeline")
 print("=" * 56)
 print("\n[1/7] Loading data.csv...")
-df = pd.read_csv("data.csv")
+df = pd.read_csv("data/data.csv")
 print("      Rows: {:,}  |  Columns: {}".format(df.shape[0], df.shape[1]))
 
 # ------------------------------------------------------------------ #
@@ -116,7 +116,7 @@ print("  assets/feature_importance.png")
 # STEP 8 — Generate market data documents from dataset
 # ------------------------------------------------------------------ #
 print("\n[8/9] Generating market data documents...")
-from rag_builder import build_knowledge_base
+from logic.rag_builder import build_knowledge_base
 build_knowledge_base(df)
 print("      Saved to market_data/")
 

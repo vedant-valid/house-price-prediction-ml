@@ -1,7 +1,7 @@
 from langgraph.graph import StateGraph, END
 
-from agent.state import AgentState
-from agent.steps import (
+from logic.state import AgentState
+from logic.steps import (
     check_input,
     predict_price,
     get_market_data,

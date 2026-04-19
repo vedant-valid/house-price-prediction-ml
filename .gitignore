@@ -17,3 +17,7 @@ __pycache__/
 .worktrees/
 # ChromaDB vector store
 chroma_db/
+
+# Large data files
+*.html
+*.pdf

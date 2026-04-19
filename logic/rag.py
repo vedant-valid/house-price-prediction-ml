@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-MARKET_DATA_DIR = "market_data"
+MARKET_DATA_DIR = "data/market_data"
 
 _vectorizer = None
 _matrix = None

@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-MARKET_DATA_DIR = "market_data"
+MARKET_DATA_DIR = "data/market_data"
 
 
 def build_knowledge_base(df: pd.DataFrame):
