@@ -48,7 +48,7 @@ def test_rag_search_returns_docs():
     assert isinstance(docs, list)
     assert isinstance(score, float)
     assert 0.0 <= score <= 1.0
-    assert len(docs) > 0, "Expected docs from chroma_db — run run_training.py first"
+    assert len(docs) > 0, "Expected docs from market_data/ — ensure market_data/ files exist"
 
 from unittest.mock import patch, MagicMock
 

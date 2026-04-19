@@ -120,10 +120,3 @@ from rag_builder import build_knowledge_base
 build_knowledge_base(df)
 print("      Saved to market_data/")
 
-# ------------------------------------------------------------------ #
-# STEP 9 — Build Chroma vector store
-# ------------------------------------------------------------------ #
-print("\n[9/9] Building vector store...")
-from rag_builder import build_vector_store
-build_vector_store()
-print("      Saved to chroma_db/")

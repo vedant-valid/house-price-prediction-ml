@@ -1,12 +1,7 @@
 import os
-import chromadb
 import pandas as pd
-from sentence_transformers import SentenceTransformer
 
 MARKET_DATA_DIR = "market_data"
-CHROMA_PATH = "chroma_db"
-COLLECTION_NAME = "market_insights"
-EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
 
 def build_knowledge_base(df: pd.DataFrame):
@@ -117,41 +112,3 @@ def _write_seasonality(df: pd.DataFrame):
 def _save(path: str, content: str):
     with open(path, "w") as f:
         f.write(content)
-
-
-def _chunk_text(text: str, size: int = 400, overlap: int = 40) -> list:
-    words = text.split()
-    chunks = []
-    i = 0
-    while i < len(words):
-        chunks.append(" ".join(words[i:i + size]))
-        i += size - overlap
-    return [c for c in chunks if c.strip()]
-
-
-def build_vector_store():
-    model = SentenceTransformer(EMBEDDING_MODEL)
-    client = chromadb.PersistentClient(path=CHROMA_PATH)
-
-    try:
-        client.delete_collection(COLLECTION_NAME)
-    except Exception:
-        pass
-
-    collection = client.create_collection(COLLECTION_NAME)
-
-    ids, texts = [], []
-    for fname in sorted(os.listdir(MARKET_DATA_DIR)):
-        if fname.endswith(".txt"):
-            with open(os.path.join(MARKET_DATA_DIR, fname), "r") as f:
-                text = f.read()
-            for i, chunk in enumerate(_chunk_text(text)):
-                ids.append(f"{fname}_{i}")
-                texts.append(chunk)
-
-    if not texts:
-        raise ValueError(f"No .txt files found in {MARKET_DATA_DIR}. Run build_knowledge_base() first.")
-
-    embeddings = model.encode(texts).tolist()
-    collection.add(ids=ids, documents=texts, embeddings=embeddings)
-    print(f"  Built vector store: {len(texts)} chunks from {len(os.listdir(MARKET_DATA_DIR))} files")

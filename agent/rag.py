@@ -1,11 +1,13 @@
-import chromadb
+import os
+import numpy as np
 from sentence_transformers import SentenceTransformer
 
-CHROMA_PATH = "chroma_db"
-COLLECTION_NAME = "market_insights"
+MARKET_DATA_DIR = "market_data"
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
 _model = None
+_docs = None
+_embeddings = None
 
 
 def _get_model() -> SentenceTransformer:
@@ -15,23 +17,36 @@ def _get_model() -> SentenceTransformer:
     return _model
 
 
-def search(query: str, k: int = 4) -> tuple[list, float]:
+def _load_docs() -> list[str]:
+    global _docs, _embeddings
+    if _docs is not None:
+        return _docs
+
+    _docs = []
+    for fname in sorted(os.listdir(MARKET_DATA_DIR)):
+        if fname.endswith(".txt"):
+            path = os.path.join(MARKET_DATA_DIR, fname)
+            with open(path) as f:
+                text = f.read().strip()
+            # split into ~paragraph chunks
+            chunks = [c.strip() for c in text.split("\n\n") if len(c.strip()) > 30]
+            _docs.extend(chunks)
+
     model = _get_model()
-    embedding = model.encode([query])[0].tolist()
+    _embeddings = model.encode(_docs, normalize_embeddings=True)
+    return _docs
 
-    client = chromadb.PersistentClient(path=CHROMA_PATH)
-    collection = client.get_collection(COLLECTION_NAME)
-    results = collection.query(
-        query_embeddings=[embedding],
-        n_results=k,
-        include=["documents", "distances"],
-    )
 
-    docs = results["documents"][0] if results["documents"] else []
-    distances = results["distances"][0] if results["distances"] else []
+def search(query: str, k: int = 4) -> tuple[list, float]:
+    docs = _load_docs()
+    model = _get_model()
 
-    if not docs:
-        return [], 0.0
+    q_emb = model.encode([query], normalize_embeddings=True)[0]
+    scores = np.dot(_embeddings, q_emb)
 
-    scores = [1.0 / (1.0 + d) for d in distances]
-    return docs, sum(scores) / len(scores)
+    top_idx = np.argsort(scores)[::-1][:k]
+    top_docs = [docs[i] for i in top_idx]
+    top_scores = [float(scores[i]) for i in top_idx]
+
+    avg_score = sum(top_scores) / len(top_scores) if top_scores else 0.0
+    return top_docs, avg_score
