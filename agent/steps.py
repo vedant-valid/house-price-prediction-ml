@@ -130,7 +130,7 @@ def write_report(state: AgentState) -> AgentState:
     for attempt in range(3):
         try:
             response = client.chat_completion(
-                model="mistralai/Mistral-7B-Instruct-v0.3",
+                model="Qwen/Qwen2.5-72B-Instruct",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=800,
                 temperature=0.3,
