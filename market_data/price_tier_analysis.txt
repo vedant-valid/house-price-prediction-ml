@@ -1,0 +1,7 @@
+Price Tier Analysis for King County
+
+Entry-level (bottom 25%): below $322,875
+Mid-range (25th-75th percentile): $322,875 to $654,962
+Median sale price: $460,943
+Premium (top 25%): above $654,962
+Luxury (top 10%): above $900,000

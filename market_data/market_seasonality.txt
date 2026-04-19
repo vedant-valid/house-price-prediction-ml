@@ -1,0 +1,6 @@
+Market Seasonality for King County
+
+Median sale price by month:
+  May: $458,950
+  June: $455,000
+  July: $487,000

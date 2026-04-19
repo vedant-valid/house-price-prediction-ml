@@ -1,0 +1,25 @@
+Neighborhood Price Rankings for King County
+
+Top 10 most expensive cities:
+  Medina: $2,100,000
+  Yarrow Point: $1,397,000
+  Clyde Hill: $1,300,000
+  Mercer Island: $948,750
+  Beaux Arts Village: $745,000
+  Bellevue: $721,500
+  Sammamish: $665,000
+  Redmond: $638,000
+  Newcastle: $602,500
+  Fall City: $563,500
+
+Top 10 most affordable cities:
+  Auburn: $274,000
+  Federal Way: $264,250
+  Tukwila: $260,000
+  Des Moines: $256,975
+  Black Diamond: $255,000
+  Covington: $249,500
+  SeaTac: $237,000
+  Algona: $230,000
+  Pacific: $221,200
+  Skykomish: $150,000

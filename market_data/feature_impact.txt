@@ -1,0 +1,26 @@
+Feature Impact on Property Prices in King County
+
+
+Median price by living area (sqft):
+  under 1000 sqft: $287,920
+  1000-1500 sqft: $345,000
+  1500-2000 sqft: $410,000
+  2000-2500 sqft: $508,750
+  2500-3000 sqft: $622,500
+  over 3000 sqft: $860,000
+
+Median price by bedroom count:
+  1 bedrooms: $262,500
+  2 bedrooms: $369,500
+  3 bedrooms: $424,750
+  4 bedrooms: $568,000
+  5 bedrooms: $580,000
+  6 bedrooms: $665,000
+  7 bedrooms: $711,500
+
+Median price by condition (1=poor to 5=excellent):
+  Condition 1: $310,000
+  Condition 2: $250,000
+  Condition 3: $465,000
+  Condition 4: $440,000
+  Condition 5: $550,000

@@ -1,0 +1,41 @@
+City Price Statistics for King County
+
+Medina: median $2,100,000, mean $2,046,559, 11 sales
+Yarrow Point: median $1,397,000, mean $1,194,838, 4 sales
+Clyde Hill: median $1,300,000, mean $1,321,945, 11 sales
+Mercer Island: median $948,750, mean $1,123,818, 86 sales
+Bellevue: median $721,500, mean $847,181, 286 sales
+Sammamish: median $665,000, mean $686,918, 175 sales
+Redmond: median $638,000, mean $667,650, 235 sales
+Newcastle: median $602,500, mean $666,047, 33 sales
+Fall City: median $563,500, mean $692,682, 11 sales
+Issaquah: median $561,000, mean $596,164, 187 sales
+Woodinville: median $559,900, mean $609,565, 115 sales
+Snoqualmie: median $527,550, mean $536,305, 71 sales
+Kirkland: median $522,000, mean $651,584, 187 sales
+Ravensdale: median $499,000, mean $514,071, 7 sales
+Seattle: median $490,000, mean $579,837, 1573 sales
+Bothell: median $458,000, mean $481,442, 33 sales
+Lake Forest Park: median $450,000, mean $448,475, 36 sales
+Normandy Park: median $447,500, mean $506,793, 18 sales
+Vashon: median $445,000, mean $472,557, 29 sales
+Carnation: median $432,175, mean $508,752, 22 sales
+Kenmore: median $432,045, mean $447,494, 66 sales
+Duvall: median $402,750, mean $403,994, 42 sales
+North Bend: median $394,250, mean $399,566, 50 sales
+Shoreline: median $360,000, mean $420,392, 123 sales
+Renton: median $345,000, mean $377,041, 293 sales
+Maple Valley: median $320,500, mean $336,475, 96 sales
+Kent: median $283,200, mean $439,492, 185 sales
+Enumclaw: median $282,000, mean $307,615, 28 sales
+Burien: median $277,500, mean $348,947, 74 sales
+Auburn: median $274,000, mean $299,340, 176 sales
+Federal Way: median $264,250, mean $289,888, 148 sales
+Tukwila: median $260,000, mean $308,290, 29 sales
+Des Moines: median $256,975, mean $304,993, 58 sales
+Black Diamond: median $255,000, mean $339,606, 9 sales
+Covington: median $249,500, mean $296,230, 43 sales
+SeaTac: median $237,000, mean $245,291, 29 sales
+Algona: median $230,000, mean $207,288, 5 sales
+Pacific: median $221,200, mean $225,233, 6 sales
+Skykomish: median $150,000, mean $233,000, 3 sales

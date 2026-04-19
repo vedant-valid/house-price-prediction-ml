@@ -111,3 +111,19 @@ print("  models/regression_scaler.pkl")
 print("  models/column_reference.pkl")
 print("  models/all_models.pkl")
 print("  assets/feature_importance.png")
+
+# ------------------------------------------------------------------ #
+# STEP 8 — Generate market data documents from dataset
+# ------------------------------------------------------------------ #
+print("\n[8/9] Generating market data documents...")
+from rag_builder import build_knowledge_base
+build_knowledge_base(df)
+print("      Saved to market_data/")
+
+# ------------------------------------------------------------------ #
+# STEP 9 — Build Chroma vector store
+# ------------------------------------------------------------------ #
+print("\n[9/9] Building vector store...")
+from rag_builder import build_vector_store
+build_vector_store()
+print("      Saved to chroma_db/")
