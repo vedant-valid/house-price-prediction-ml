@@ -41,3 +41,11 @@ def test_rag_builder_creates_files():
         assert "price_tier_analysis.txt" in files
         assert "neighborhood_rankings.txt" in files
         assert "market_seasonality.txt" in files
+
+def test_rag_search_returns_docs():
+    from agent.rag import search
+    docs, score = search("Seattle 3 bedroom house price investment", k=2)
+    assert isinstance(docs, list)
+    assert isinstance(score, float)
+    assert 0.0 <= score <= 1.0
+    assert len(docs) > 0, "Expected docs from chroma_db — run run_training.py first"
