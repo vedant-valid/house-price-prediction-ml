@@ -7,3 +7,9 @@ xgboost
 matplotlib
 seaborn
 joblib
+langgraph
+langchain-google-genai
+langchain-core
+chromadb
+sentence-transformers
+pytest
