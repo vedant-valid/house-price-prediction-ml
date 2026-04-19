@@ -267,21 +267,163 @@ with st.sidebar:
 
 
 # ------------------------------------------------------------------ #
-# MAIN PANEL — placeholder or results
+# TABS — ML Predictor (Tab 1) and AI Advisor (Tab 2)
 # ------------------------------------------------------------------ #
-if not predict_clicked:
-    st.markdown("""
-    <div style="text-align:center; padding: 3rem 1rem; color:#4a5568;">
-        <p style="font-size:3.5rem; margin:0;">🏡</p>
-        <p style="font-size:1.15rem; color:#718096; margin-top:1rem;">
-            Fill in the property details in the sidebar and click
-            <strong style="color:#63b3ed;">🔍 Predict Price</strong> to get a valuation.
+tab1, tab2 = st.tabs(["🏠 Price Predictor", "🤖 AI Advisor"])
+
+with tab1:
+    if not predict_clicked:
+        st.markdown("""
+        <div style="text-align:center; padding: 3rem 1rem; color:#4a5568;">
+            <p style="font-size:3.5rem; margin:0;">🏡</p>
+            <p style="font-size:1.15rem; color:#718096; margin-top:1rem;">
+                Fill in the property details in the sidebar and click
+                <strong style="color:#63b3ed;">🔍 Predict Price</strong> to get a valuation.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    else:
+        user_input = {
+            "sqft_living":   sqft_living,
+            "sqft_lot":      sqft_lot,
+            "sqft_above":    sqft_above,
+            "sqft_basement": sqft_basement,
+            "bedrooms":      bedrooms,
+            "bathrooms":     bathrooms,
+            "floors":        floors,
+            "waterfront":    waterfront,
+            "view":          view,
+            "condition":     condition,
+            "yr_built":      yr_built,
+            "city":          city,
+            "statezip":      statezip,
+            "year_sold":     2014,
+            "month_sold":    6,
+        }
+
+        with st.spinner("Analyzing property..."):
+            result = predict_property(user_input)
+
+        pred   = result["predicted_price"]
+        low    = result["price_range"]["low"]
+        high   = result["price_range"]["high"]
+        conf   = result["confidence"]
+        model  = result["model_used"]
+        drivers = result["top_price_drivers"]
+
+        # ── ROW 1 — Three metric cards ─────────────────────────────────
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.metric(
+                label="Predicted Price",
+                value="${:,.0f}".format(pred),
+            )
+        with col2:
+            st.metric(
+                label="Price Range (±10%)",
+                value="${:,.0f} – ${:,.0f}".format(low, high),
+            )
+        with col3:
+            r2_display = "0.733" if model == "Linear Regression" else "—"
+            st.metric(
+                label="Confidence",
+                value=conf,
+                delta="R² = {} · {}".format(r2_display, model),
+            )
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # ── ROW 2 — Top drivers + property summary ─────────────────────
+        col_d, col_s = st.columns([1, 1])
+
+        with col_d:
+            driver_badges = " ".join(
+                '<span class="driver-badge">{}</span>'.format(d) for d in drivers
+            )
+            st.markdown("""
+            <div class="result-card">
+                <h4>🎯 Top Price Drivers</h4>
+                <p>{}</p>
+            </div>
+            """.format(driver_badges), unsafe_allow_html=True)
+
+        with col_s:
+            property_age = 2014 - yr_built
+            wf_label = "Yes ✅" if waterfront else "No"
+            st.markdown("""
+            <div class="result-card">
+                <h4>📋 Property Summary</h4>
+                <p>
+                    <b>City:</b> {city} &nbsp;|&nbsp; <b>ZIP:</b> {zip}<br>
+                    <b>Living Area:</b> {:,} sqft &nbsp;|&nbsp; <b>Lot:</b> {:,} sqft<br>
+                    <b>Beds:</b> {} &nbsp;|&nbsp; <b>Baths:</b> {} &nbsp;|&nbsp; <b>Floors:</b> {}<br>
+                    <b>Property Age:</b> {} yrs &nbsp;|&nbsp; <b>Waterfront:</b> {}
+                </p>
+            </div>
+            """.format(
+                sqft_living, sqft_lot,
+                bedrooms, bathrooms, floors,
+                property_age, wf_label,
+                city=city, zip=statezip,
+            ), unsafe_allow_html=True)
+
+        st.divider()
+
+        # ── ROW 3 — Feature importance chart ───────────────────────────
+        chart_path = os.path.join("assets", "feature_importance.png")
+        if os.path.exists(chart_path):
+            st.subheader("📊 Model Feature Importance")
+            st.image(chart_path, width='stretch')
+        else:
+            st.info("Feature importance chart not found. Run `run_training.py` to generate it.")
+
+        st.divider()
+
+        # ── ROW 4 — Model selection summary ────────────────────────────
+        st.subheader("📝 Model Selection Analysis")
+        try:
+            with open("assets/model_summary.txt", "r") as _f:
+                st.markdown(_f.read())
+        except FileNotFoundError:
+            st.info("Run `run_training.py` once to generate the model summary.")
+
+        st.divider()
+
+        # ── ROW 5 — Feature insights ───────────────────────────────────
+        st.subheader("💡 Feature Insights")
+        try:
+            with open("assets/feature_insights.txt", "r") as _f:
+                raw = _f.read()
+            for bullet in raw.split("\n"):
+                if bullet.strip().startswith("*"):
+                    st.markdown("- " + bullet.strip()[1:].strip())
+                elif bullet.strip() and not bullet.strip().startswith("---"):
+                    st.markdown(bullet)
+        except FileNotFoundError:
+            st.info("Run `run_training.py` once to generate the feature insights.")
+
+        st.divider()
+
+        # ── Footer ─────────────────────────────────────────────────────
+        st.markdown("""
+        <p style="text-align:center; color:#4a5568; font-size:0.8rem; margin-top:1rem;">
+            House Price Predictor · King County, WA · Project 9 — Milestone 1<br>
+            Model: <strong style="color:#63b3ed;">{}</strong> ·
+            Confidence: <strong style="color:#68d391;">{}</strong>
         </p>
+        """.format(model, conf), unsafe_allow_html=True)
+
+with tab2:
+    st.markdown("""
+    <div class="hero-banner">
+      <p class="hero-title">🤖 AI Real Estate Advisor</p>
+      <p class="hero-subtitle">Agentic investment analysis · Gemini + RAG + LangGraph</p>
     </div>
     """, unsafe_allow_html=True)
 
-else:
-    user_input = {
+    advisor_input = {
         "sqft_living":   sqft_living,
         "sqft_lot":      sqft_lot,
         "sqft_above":    sqft_above,
@@ -299,115 +441,80 @@ else:
         "month_sold":    6,
     }
 
-    with st.spinner("Analyzing property..."):
-        result = predict_property(user_input)
+    if st.button("🔍 Get Investment Advisory", key="advisor_btn", type="primary"):
+        from agent.pipeline import pipeline
 
-    pred   = result["predicted_price"]
-    low    = result["price_range"]["low"]
-    high   = result["price_range"]["high"]
-    conf   = result["confidence"]
-    model  = result["model_used"]
-    drivers = result["top_price_drivers"]
+        initial_state = {
+            "property_input":  advisor_input,
+            "predicted_price": 0.0,
+            "price_range":     {},
+            "retrieved_docs":  [],
+            "retrieval_score": 0.0,
+            "comparables":     [],
+            "report":          {},
+            "error":           None,
+        }
 
-    # ── ROW 1 — Three metric cards ─────────────────────────────────
-    col1, col2, col3 = st.columns(3)
+        with st.status("Running AI analysis...", expanded=True) as status:
+            st.write("Validating property details...")
+            st.write("Running price prediction...")
+            st.write("Retrieving market insights...")
+            st.write("Finding comparable homes...")
+            st.write("Writing advisory report...")
+            result = pipeline.invoke(initial_state)
+            status.update(label="Analysis complete!", state="complete")
 
-    with col1:
-        st.metric(
-            label="Predicted Price",
-            value="${:,.0f}".format(pred),
-        )
-    with col2:
-        st.metric(
-            label="Price Range (±10%)",
-            value="${:,.0f} – ${:,.0f}".format(low, high),
-        )
-    with col3:
-        r2_display = "0.733" if model == "Linear Regression" else "—"
-        st.metric(
-            label="Confidence",
-            value=conf,
-            delta="R² = {} · {}".format(r2_display, model),
-        )
+        if result.get("error"):
+            st.error(f"⚠️ {result['error']}")
+        else:
+            report = result["report"]
 
-    st.markdown("<br>", unsafe_allow_html=True)
+            with st.expander("📊 Property Valuation Summary", expanded=True):
+                st.write(report.get("summary", ""))
+                c1, c2 = st.columns(2)
+                with c1:
+                    st.metric("Predicted Price", f"${result['predicted_price']:,.0f}")
+                with c2:
+                    lo = result["price_range"].get("low", 0)
+                    hi = result["price_range"].get("high", 0)
+                    st.metric("Price Range", f"${lo:,.0f} – ${hi:,.0f}")
 
-    # ── ROW 2 — Top drivers + property summary ─────────────────────
-    col_d, col_s = st.columns([1, 1])
+            with st.expander("🏘️ Comparable Properties"):
+                comps = report.get("comparables", [])
+                if comps:
+                    st.dataframe(
+                        pd.DataFrame(comps).rename(columns={
+                            "city": "City", "sqft": "Sqft", "beds": "Beds",
+                            "price": "Price ($)", "delta_pct": "vs Prediction (%)"
+                        }),
+                        hide_index=True,
+                    )
+                else:
+                    st.info("No comparable properties found in the dataset.")
 
-    with col_d:
-        driver_badges = " ".join(
-            '<span class="driver-badge">{}</span>'.format(d) for d in drivers
-        )
+            with st.expander("💡 Investment Recommendation", expanded=True):
+                action = report.get("action", "")
+                if action.upper().startswith("BUY"):
+                    st.success(action)
+                elif action.upper().startswith("AVOID"):
+                    st.error(action)
+                else:
+                    st.warning(action)
+                notes = report.get("market_notes", [])
+                if notes:
+                    st.markdown("**Market Notes:**")
+                    for note in notes:
+                        st.markdown(f"- {note}")
+
+            with st.expander("⚖️ Disclaimer"):
+                st.caption(report.get("disclaimer", ""))
+    else:
         st.markdown("""
-        <div class="result-card">
-            <h4>🎯 Top Price Drivers</h4>
-            <p>{}</p>
-        </div>
-        """.format(driver_badges), unsafe_allow_html=True)
-
-    with col_s:
-        property_age = 2014 - yr_built
-        wf_label = "Yes ✅" if waterfront else "No"
-        st.markdown("""
-        <div class="result-card">
-            <h4>📋 Property Summary</h4>
-            <p>
-                <b>City:</b> {city} &nbsp;|&nbsp; <b>ZIP:</b> {zip}<br>
-                <b>Living Area:</b> {:,} sqft &nbsp;|&nbsp; <b>Lot:</b> {:,} sqft<br>
-                <b>Beds:</b> {} &nbsp;|&nbsp; <b>Baths:</b> {} &nbsp;|&nbsp; <b>Floors:</b> {}<br>
-                <b>Property Age:</b> {} yrs &nbsp;|&nbsp; <b>Waterfront:</b> {}
+        <div style="text-align:center; padding: 3rem 1rem; color:#4a5568;">
+            <p style="font-size:3.5rem; margin:0;">🤖</p>
+            <p style="font-size:1.15rem; color:#718096; margin-top:1rem;">
+                Fill in the property details in the sidebar and click
+                <strong style="color:#63b3ed;">🔍 Get Investment Advisory</strong>.
             </p>
         </div>
-        """.format(
-            sqft_living, sqft_lot,
-            bedrooms, bathrooms, floors,
-            property_age, wf_label,
-            city=city, zip=statezip,
-        ), unsafe_allow_html=True)
-
-    st.divider()
-
-    # ── ROW 3 — Feature importance chart ───────────────────────────
-    chart_path = os.path.join("assets", "feature_importance.png")
-    if os.path.exists(chart_path):
-        st.subheader("📊 Model Feature Importance")
-        st.image(chart_path, width='stretch')
-    else:
-        st.info("Feature importance chart not found. Run `run_training.py` to generate it.")
-
-    st.divider()
-
-    # ── ROW 4 — Model selection summary ────────────────────────────
-    st.subheader("📝 Model Selection Analysis")
-    try:
-        with open("assets/model_summary.txt", "r") as _f:
-            st.markdown(_f.read())
-    except FileNotFoundError:
-        st.info("Run `run_training.py` once to generate the model summary.")
-
-    st.divider()
-
-    # ── ROW 5 — Feature insights ───────────────────────────────────
-    st.subheader("💡 Feature Insights")
-    try:
-        with open("assets/feature_insights.txt", "r") as _f:
-            raw = _f.read()
-        for bullet in raw.split("\n"):
-            if bullet.strip().startswith("*"):
-                st.markdown("- " + bullet.strip()[1:].strip())
-            elif bullet.strip() and not bullet.strip().startswith("---"):
-                st.markdown(bullet)
-    except FileNotFoundError:
-        st.info("Run `run_training.py` once to generate the feature insights.")
-
-    st.divider()
-
-    # ── Footer ─────────────────────────────────────────────────────
-    st.markdown("""
-    <p style="text-align:center; color:#4a5568; font-size:0.8rem; margin-top:1rem;">
-        House Price Predictor · King County, WA · Project 9 — Milestone 1<br>
-        Model: <strong style="color:#63b3ed;">{}</strong> · 
-        Confidence: <strong style="color:#68d391;">{}</strong>
-    </p>
-    """.format(model, conf), unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
