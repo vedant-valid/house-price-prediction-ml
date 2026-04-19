@@ -143,10 +143,10 @@ def write_report(state: AgentState) -> AgentState:
             "market_notes": parsed.get("market_notes", []),
             "comparables": comps,
         }
-    except Exception:
+    except Exception as e:
         state["report"] = {
             "summary": f"Property estimated at ${state['predicted_price']:,.0f}.",
-            "action": "HOLD — Unable to generate detailed analysis. Please try again.",
+            "action": f"HOLD — LLM error: {type(e).__name__}: {str(e)[:300]}",
             "market_notes": [],
             "comparables": comps,
         }
