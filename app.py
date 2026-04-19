@@ -177,6 +177,47 @@ st.markdown("""
 
     /* Streamlit image */
     img { border-radius: 12px; }
+
+    /* Analysis Query box */
+    .query-label {
+        color: #00e5cc;
+        font-size: 1.1rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .query-label::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: rgba(0,229,204,0.25);
+        margin-left: 0.75rem;
+    }
+    textarea[data-testid="stTextArea"] {
+        background: #0a0a0f !important;
+        border: 2px solid #00e5cc !important;
+        border-radius: 12px !important;
+        color: #e2e8f0 !important;
+        font-size: 1.15rem !important;
+        line-height: 1.6 !important;
+        padding: 1.2rem !important;
+        box-shadow: 0 0 20px rgba(0,229,204,0.15), inset 0 0 30px rgba(0,229,204,0.03) !important;
+        transition: box-shadow 0.3s ease !important;
+    }
+    textarea[data-testid="stTextArea"]:focus {
+        box-shadow: 0 0 30px rgba(0,229,204,0.3), inset 0 0 30px rgba(0,229,204,0.05) !important;
+    }
+    .query-hint {
+        text-align: right;
+        color: #4a5568;
+        font-size: 0.82rem;
+        margin-top: -0.5rem;
+        margin-bottom: 1rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -419,17 +460,18 @@ with tab2:
     st.markdown("""
     <div class="hero-banner">
       <p class="hero-title">🤖 AI Real Estate Advisor</p>
-      <p class="hero-subtitle">Agentic investment analysis · Gemini + RAG + LangGraph</p>
+      <p class="hero-subtitle">Agentic investment analysis · LLM + RAG + LangGraph</p>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("#### 💬 Describe the property you want to analyse")
+    st.markdown('<div class="query-label">📋 &nbsp;Analysis Query</div>', unsafe_allow_html=True)
     user_query = st.text_area(
-        label="Natural language query",
-        placeholder='e.g. "I want a 3 bedroom apartment in Bellevue with 1500 sqft built in 2005"',
-        height=80,
+        label="Analysis Query",
+        placeholder='e.g. "I want a 3 bedroom house in Bellevue with 1500 sqft built in 2005, good condition"',
+        height=130,
         label_visibility="collapsed",
     )
+    st.markdown('<div class="query-hint">Press ⌘+Enter to apply</div>', unsafe_allow_html=True)
 
     advisor_input = {
         "sqft_living":   sqft_living,
