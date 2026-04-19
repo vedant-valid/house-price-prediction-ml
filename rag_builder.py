@@ -149,6 +149,9 @@ def build_vector_store():
                 ids.append(f"{fname}_{i}")
                 texts.append(chunk)
 
+    if not texts:
+        raise ValueError(f"No .txt files found in {MARKET_DATA_DIR}. Run build_knowledge_base() first.")
+
     embeddings = model.encode(texts).tolist()
     collection.add(ids=ids, documents=texts, embeddings=embeddings)
     print(f"  Built vector store: {len(texts)} chunks from {len(os.listdir(MARKET_DATA_DIR))} files")

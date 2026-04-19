@@ -40,3 +40,4 @@ def test_rag_builder_creates_files():
         assert "feature_impact.txt" in files
         assert "price_tier_analysis.txt" in files
         assert "neighborhood_rankings.txt" in files
+        assert "market_seasonality.txt" in files
