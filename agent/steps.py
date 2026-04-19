@@ -92,12 +92,6 @@ def find_similar_homes(state: AgentState) -> AgentState:
 
 
 def write_report(state: AgentState) -> AgentState:
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash-lite",
-        google_api_key=os.environ.get("GOOGLE_API_KEY", ""),
-        temperature=0.3,
-    )
-
     market_context = "\n".join(
         f"- {doc[:300]}" for doc in state["retrieved_docs"][:3]
     )
@@ -129,6 +123,11 @@ def write_report(state: AgentState) -> AgentState:
     )
 
     try:
+        llm = ChatGoogleGenerativeAI(
+            model="gemini-2.0-flash-lite",
+            google_api_key=os.environ.get("GOOGLE_API_KEY", ""),
+            temperature=0.3,
+        )
         response = llm.invoke(prompt)
         parsed = json.loads(response.content)
         state["report"] = {
