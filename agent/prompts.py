@@ -1,3 +1,24 @@
+PARSE_PROMPT = """Extract property details from the user query below and return ONLY valid JSON.
+
+User query: "{query}"
+
+Return JSON with these keys (use defaults if not mentioned):
+- "city": string (default "Seattle")
+- "statezip": string like "WA 98103" (default "WA 98103")
+- "sqft_living": integer (default 1800)
+- "bedrooms": integer (default 3)
+- "bathrooms": float (default 2.0)
+- "floors": float (default 1.0)
+- "condition": integer 1-5 (default 3)
+- "yr_built": integer (default 1990)
+- "waterfront": integer 0 or 1 (default 0)
+- "view": integer 0-4 (default 0)
+- "sqft_lot": integer (default 5000)
+- "sqft_above": integer (same as sqft_living if no basement mentioned)
+- "sqft_basement": integer (default 0)
+
+Respond ONLY with valid JSON, no extra text."""
+
 REPORT_PROMPT = """You are a critical real estate investment advisor. Analyze the property below and give an honest, data-driven investment recommendation.
 
 Property Details:

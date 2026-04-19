@@ -6,7 +6,7 @@ from huggingface_hub import InferenceClient
 
 from agent.state import AgentState
 from agent.rag import search
-from agent.prompts import REPORT_PROMPT
+from agent.prompts import REPORT_PROMPT, PARSE_PROMPT
 
 
 def check_input(state: AgentState) -> AgentState:
@@ -182,6 +182,27 @@ def add_disclaimer(state: AgentState) -> AgentState:
         "financial advisor before making investment decisions."
     )
     return state
+
+
+def parse_query(user_query: str) -> dict:
+    api_key = os.environ.get("HF_API_KEY", "")
+    client = InferenceClient(api_key=api_key)
+    try:
+        response = client.chat_completion(
+            model="Qwen/Qwen2.5-72B-Instruct",
+            messages=[{"role": "user", "content": PARSE_PROMPT.format(query=user_query)}],
+            max_tokens=300,
+            temperature=0.1,
+        )
+        raw = response.choices[0].message.content.strip()
+        if raw.startswith("```"):
+            raw = raw.split("```", 2)[1]
+            if raw.startswith("json"):
+                raw = raw[4:]
+            raw = raw.rsplit("```", 1)[0].strip()
+        return json.loads(raw)
+    except Exception:
+        return {}
 
 
 def route_after_retrieval(state: AgentState) -> str:

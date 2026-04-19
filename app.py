@@ -423,6 +423,14 @@ with tab2:
     </div>
     """, unsafe_allow_html=True)
 
+    st.markdown("#### 💬 Describe the property you want to analyse")
+    user_query = st.text_area(
+        label="Natural language query",
+        placeholder='e.g. "I want a 3 bedroom apartment in Bellevue with 1500 sqft built in 2005"',
+        height=80,
+        label_visibility="collapsed",
+    )
+
     advisor_input = {
         "sqft_living":   sqft_living,
         "sqft_lot":      sqft_lot,
@@ -442,6 +450,21 @@ with tab2:
     }
 
     if st.button("🔍 Get Investment Advisory", key="advisor_btn", type="primary"):
+        if user_query.strip():
+            from agent.steps import parse_query
+            with st.spinner("Parsing your query..."):
+                parsed = parse_query(user_query.strip())
+            if parsed:
+                advisor_input.update(parsed)
+                advisor_input.setdefault("year_sold", 2014)
+                advisor_input.setdefault("month_sold", 6)
+                st.info(
+                    f"Parsed: **{parsed.get('bedrooms', '?')} bed** · "
+                    f"**{parsed.get('sqft_living', '?')} sqft** · "
+                    f"**{parsed.get('city', '?')}** · "
+                    f"Condition **{parsed.get('condition', '?')}/5** · "
+                    f"Built **{parsed.get('yr_built', '?')}**"
+                )
         from agent.pipeline import pipeline
 
         initial_state = {
