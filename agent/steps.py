@@ -124,12 +124,19 @@ def write_report(state: AgentState) -> AgentState:
 
     try:
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash-lite",
+            model="gemini-1.5-flash",
             google_api_key=os.environ.get("GOOGLE_API_KEY", ""),
             temperature=0.3,
         )
         response = llm.invoke(prompt)
-        parsed = json.loads(response.content)
+        raw = response.content.strip()
+        # strip markdown code fences if present
+        if raw.startswith("```"):
+            raw = raw.split("```", 2)[1]
+            if raw.startswith("json"):
+                raw = raw[4:]
+            raw = raw.rsplit("```", 1)[0].strip()
+        parsed = json.loads(raw)
         state["report"] = {
             "summary": parsed.get("summary", ""),
             "action": parsed.get("action", ""),
