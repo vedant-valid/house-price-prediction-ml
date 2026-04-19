@@ -1,5 +1,6 @@
 import os
 import json
+import time
 import pandas as pd
 from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -122,34 +123,52 @@ def write_report(state: AgentState) -> AgentState:
         comps_summary=comps_summary,
     )
 
-    try:
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash-latest",
-            google_api_key=os.environ.get("GOOGLE_API_KEY", ""),
-            temperature=0.3,
-        )
-        response = llm.invoke(prompt)
-        raw = response.content.strip()
-        # strip markdown code fences if present
-        if raw.startswith("```"):
-            raw = raw.split("```", 2)[1]
-            if raw.startswith("json"):
-                raw = raw[4:]
-            raw = raw.rsplit("```", 1)[0].strip()
-        parsed = json.loads(raw)
-        state["report"] = {
-            "summary": parsed.get("summary", ""),
-            "action": parsed.get("action", ""),
-            "market_notes": parsed.get("market_notes", []),
-            "comparables": comps,
-        }
-    except Exception as e:
-        state["report"] = {
-            "summary": f"Property estimated at ${state['predicted_price']:,.0f}.",
-            "action": f"HOLD — LLM error: {type(e).__name__}: {str(e)[:300]}",
-            "market_notes": [],
-            "comparables": comps,
-        }
+    api_key = os.environ.get("GOOGLE_API_KEY", "")
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-2.0-flash-lite",
+        google_api_key=api_key,
+        temperature=0.3,
+    )
+
+    last_err = None
+    for attempt in range(3):
+        try:
+            response = llm.invoke(prompt)
+            raw = response.content.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```", 2)[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+                raw = raw.rsplit("```", 1)[0].strip()
+            parsed = json.loads(raw)
+            state["report"] = {
+                "summary": parsed.get("summary", ""),
+                "action": parsed.get("action", ""),
+                "market_notes": parsed.get("market_notes", []),
+                "comparables": comps,
+            }
+            return state
+        except Exception as e:
+            last_err = e
+            if "429" in str(e) and attempt < 2:
+                time.sleep(10 * (attempt + 1))
+            else:
+                break
+
+    err_msg = str(last_err)
+    if "429" in err_msg:
+        action = "HOLD — Gemini API quota exhausted. Free tier resets daily at midnight Pacific. Try again tomorrow or enable billing at console.cloud.google.com."
+    elif "API key" in err_msg or "403" in err_msg:
+        action = "HOLD — Invalid API key. Check GOOGLE_API_KEY in Streamlit secrets."
+    else:
+        action = f"HOLD — LLM error: {type(last_err).__name__}: {err_msg[:200]}"
+
+    state["report"] = {
+        "summary": f"Property estimated at ${state['predicted_price']:,.0f}.",
+        "action": action,
+        "market_notes": [],
+        "comparables": comps,
+    }
     return state
 
 
