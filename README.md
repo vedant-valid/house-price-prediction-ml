@@ -27,7 +27,7 @@ Two milestones. One system.
 
 **Milestone 1** is a machine learning pipeline that predicts residential sale prices from structured property data — square footage, location, condition, age. It trains five models, auto-selects the best one, and serves predictions through a Streamlit UI.
 
-**Milestone 2** wraps that predictor inside an agentic AI advisory system. It doesn't just return a number — it retrieves relevant market context, finds comparable sales, and generates a grounded BUY / HOLD / AVOID investment recommendation using a large language model. The whole thing runs as a multi-step LangGraph pipeline with explicit state management.
+**Milestone 2** wraps that predictor inside an agentic AI advisory system. It doesn't just return a number — it retrieves relevant market context, finds comparable sales, and generates a grounded BUY / HOLD / AVOID investment recommendation using a large language model. The whole thing runs as a multi-step LangGraph pipeline with explicit state manage.
 
 | | |
 |---|---|
